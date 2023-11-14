@@ -6,7 +6,7 @@
 /*   By: ddyankov <ddyankov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/12 12:32:25 by ddyankov          #+#    #+#             */
-/*   Updated: 2023/11/13 17:21:01 by ddyankov         ###   ########.fr       */
+/*   Updated: 2023/11/14 16:04:23 by ddyankov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <fstream>
 # include <map>
 # include <ctime>
+# include <string>
 # include <sstream>
 
 # define URED "\033[4;31m"
@@ -40,9 +41,10 @@ class BitcoinExchange
 
         void    checkArg(int argsCounter) const;
         void    checkArgValue(char *av) const;
-        void    checkData(const char *data) const;
+        void    getData(const char *data);
         void    checkInput(const char *input) const;
-        void    checkDate(std::string& line) const;
+        bool    checkPipe(std::string& line) const;
+        int     checkInputDate(std::string& line) const;
 };
 
 
