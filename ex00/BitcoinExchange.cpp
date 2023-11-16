@@ -6,7 +6,7 @@
 /*   By: ddyankov <ddyankov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/12 12:30:25 by ddyankov          #+#    #+#             */
-/*   Updated: 2023/11/14 17:14:12 by ddyankov         ###   ########.fr       */
+/*   Updated: 2023/11/16 16:22:28 by ddyankov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ void    BitcoinExchange::getData(const char *data)
         ss >> mapValue;
         //std::cout << mapValue << std::endl;
         _map.insert(std::pair<std::string, float>(date, mapValue));
-        
     }
     /*std::map<std::string,float>::iterator it = _map.begin();
     std::cout << "mymap contains:\n";
@@ -70,16 +69,20 @@ void    BitcoinExchange::checkInput(const char *input) const
 {
     std::ifstream   ifs;
     std::string     line;
+    std::string     modifiedLine;
     ifs.open(input, std::ifstream::in);
     std::getline(ifs, line);
-    if (line != "date | value")
+    removeWhitespaces(line);
+    if (line != "date|value")
         throw std::out_of_range("File must start with 'date | value'");
     while (std::getline(ifs, line))
     {
+        std::string lineOriginal = line;
+        removeWhitespaces(line);
         if (!checkPipe(line)) 
-             std::cout << "Bad Input => " << line << std::endl;
+             std::cout << "Bad Input => " << lineOriginal << std::endl;
         if (checkInputDate(line) == 1)
-             std::cout << "Bad Input => " << line << std::endl;
+             std::cout << "Bad Input => " << lineOriginal << std::endl;
         else if (checkInputDate(line) == 2)
             std::cout << "Error: not a positive number." << std::endl;
         else if (checkInputDate(line) == 3)
@@ -104,8 +107,10 @@ bool    BitcoinExchange::checkPipe(std::string& line) const
 
 int   BitcoinExchange::checkInputDate(std::string& line) const
 {
-    std::string date = line.substr(0, line.find("|") - 1);
-    std::stringstream streamValue(line.substr(line.find("|") + 2));
+    std::string date = line.substr(0, line.find("|"));
+    if (date[4] != '-' || date[7] != '-')
+        return 1;
+    std::stringstream streamValue(line.substr(line.find("|") + 1));
     int dot = 0;
     for (unsigned int i = 0; i < streamValue.str().size(); i++)
     {
@@ -116,18 +121,46 @@ int   BitcoinExchange::checkInputDate(std::string& line) const
         if (dot > 1)
             return 1;
     }
-    std::stringstream streamYear(date.substr(0, date.find("-")) );
+    std::stringstream   streamYear(date.substr(0, date.find("-")));
     int year;
-    float value;
     streamYear >> year;
-    streamValue >> value;
-    //std::cout << year << std::endl;
-    //std::cout << value << std::endl;
     if (year <= 2009 || year >= 2030)
         return 1;
+    float value;
+    streamValue >> value;
     if (value <= 0 )
         return 2;
     else if(value > 1000)
         return 3;
+    std::cout << "Year: " << year << std::endl;
+    std::cout << "Value: " << value << std::endl;
+    std::stringstream   streamMonth(date.substr(5,2));
+    int month;
+    streamMonth >> month;
+    std::cout << "Month: " << month << std::endl;
+    std::stringstream   streamDay(date.substr(8,2));
+    int day;
+    streamDay >> day;
+    std::cout << "Day: " << day << std::endl;
+    if (month < 1 || month > 12 || day < 1 || day > 31)
+        return 1;
+    if ((month == 4 || month == 6 || month == 9 || month == 11) && day > 30)
+        return 1;
+    if (year % 4 != 0 && month == 2 && day > 28)
+        return 1;
+    std::map<std::string, float>::const_iterator it = _map.lower_bound(date);
+    std::cout << "Lower Bound: " << it->first << std::endl;
     return 0;
+}
+
+void    BitcoinExchange::removeWhitespaces(std::string& line) const
+{
+    std::string::iterator it = line.begin();
+    while (it != line.end())
+    {
+        if (isspace(*it))
+            line.erase(it);
+        else
+            ++it;
+    }
 }
