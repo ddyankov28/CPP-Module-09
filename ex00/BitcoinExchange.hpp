@@ -6,7 +6,7 @@
 /*   By: ddyankov <ddyankov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/12 12:32:25 by ddyankov          #+#    #+#             */
-/*   Updated: 2023/11/17 14:49:08 by ddyankov         ###   ########.fr       */
+/*   Updated: 2023/11/17 17:20:25 by ddyankov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,9 @@ class BitcoinExchange
         int     checkInputLine(std::string& line, int flag) const;
         void    removeWhitespaces(std::string& line) const;
         bool    checkMinus(const std::string& value) const;
+        int     handleDate(const std::string& date) const;
+        std::string formatDouble(double value) const;
+
 
 
 };

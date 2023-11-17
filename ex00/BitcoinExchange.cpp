@@ -6,7 +6,7 @@
 /*   By: ddyankov <ddyankov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/12 12:30:25 by ddyankov          #+#    #+#             */
-/*   Updated: 2023/11/17 14:49:33 by ddyankov         ###   ########.fr       */
+/*   Updated: 2023/11/17 17:50:16 by ddyankov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,8 @@ void    BitcoinExchange::checkInput(const char *input) const
 
 bool    BitcoinExchange::checkPipe(std::string& line) const
 {
+    if (line[line.size()- 1] == '|')
+        return false;
     int pipe = -1;
     for (unsigned int i = 0; i < line.size(); i++)
     {
@@ -114,6 +116,8 @@ bool    BitcoinExchange::checkMinus(const std::string& value) const
             minus++;
         if (minus > 1)
             return false;
+        if (value[i] != '-' && !isdigit(value[i]) && value[i] != '.')
+            return false;
     }
     return true;
 }
@@ -126,8 +130,6 @@ int   BitcoinExchange::checkInputLine(std::string& line, int flag) const
     std::stringstream streamValue(line.substr(line.find("|") + 1));
     if (!checkMinus(streamValue.str()))
         return 1;
-    if (atoi(streamValue.str().c_str()) <= 0)
-        return 2;
     int dot = 0;
     for (unsigned int i = 0; i < streamValue.str().size(); i++)
     {
@@ -138,23 +140,36 @@ int   BitcoinExchange::checkInputLine(std::string& line, int flag) const
         if (dot > 1 || (streamValue.str()[i] == '.' && i + 1 == streamValue.str().size()))
             return 1;
     }
-    std::stringstream   streamYear(date.substr(0, date.find("-")));
-    int year;
-    streamYear >> year;
-    if (year < 2009 || year >= 2030)
+    if (handleDate(date) == 1)
         return 1;
     float value;
     streamValue >> value;
-    if (value <= 0 )
+    if (value < 0)
         return 2;
-    else if(value > 1000)
+    else if (value > 1000)
         return 3;
-    std::stringstream   streamMonth(date.substr(5,2));
-    int month;
-    streamMonth >> month;
-    std::stringstream   streamDay(date.substr(8,2));
-    int day;
-    streamDay >> day;
+    std::map<std::string, float>::const_iterator it = _map.lower_bound(date);
+    if (_map.find(date) == _map.end())
+        it--;
+    float result = value * it->second;
+    if (handleDate(date) == 2)
+        result = value * 0;
+    if (flag)
+    {
+        std::string newResult = formatDouble(result);
+        std::cout << date << " => " << value << " = " << newResult << std::endl;
+    }
+    return 0;
+}
+
+int BitcoinExchange::handleDate(const std::string& date) const
+{
+    int year = atoi(date.substr(0, date.find("-")).c_str());
+    int month = atoi(date.substr(5,2).c_str());
+    int day = atoi(date.substr(8,2).c_str());
+    
+    if (year < 2009 || year >= 2030)
+        return 1;
     if (month < 1 || month > 12 || day < 1 || day > 31)
         return 1;
     if ((month == 4 || month == 6 || month == 9 || month == 11) && day > 30)
@@ -163,15 +178,8 @@ int   BitcoinExchange::checkInputLine(std::string& line, int flag) const
         return 1;
     if (month == 2 && day > 29)
         return 1;
-    std::map<std::string, float>::const_iterator it = _map.lower_bound(date);
-    if (_map.find(date) == _map.end())
-        it--;
-        
-    float result = value * it->second;
     if (year == 2009 && month == 1 && day == 1)
-        result = value * 0;
-    if (flag)
-        std::cout << date << " => " << value << " = " <<std::fixed << std::setprecision(1) << result << std::endl;
+        return 2;
     return 0;
 }
 
@@ -185,4 +193,17 @@ void    BitcoinExchange::removeWhitespaces(std::string& line) const
         else
             ++it;
     }
+}
+
+std::string BitcoinExchange::formatDouble(double result) const
+{
+    std::stringstream oss;
+    oss << std::fixed << std::setprecision(3) << result;
+    std::string formatted = oss.str();
+
+    while (!formatted.empty() && (formatted[formatted.size() - 1] == '0' || formatted[formatted.size() - 1] == '.'))
+        formatted.erase(formatted.size() - 1);
+    if (formatted.empty())
+        formatted = "0";
+    return formatted;
 }
