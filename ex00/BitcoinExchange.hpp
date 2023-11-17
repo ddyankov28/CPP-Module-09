@@ -6,7 +6,7 @@
 /*   By: ddyankov <ddyankov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/12 12:32:25 by ddyankov          #+#    #+#             */
-/*   Updated: 2023/11/16 11:12:03 by ddyankov         ###   ########.fr       */
+/*   Updated: 2023/11/17 12:59:02 by ddyankov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 # include <ctime>
 # include <string>
 # include <sstream>
+# include <cstdlib>
+# include <iomanip>
 
 # define URED "\033[4;31m"
 # define RED "\033[1;91m"
@@ -32,6 +34,7 @@ class BitcoinExchange
 {
     private:
         std::map<std::string, float>    _map;
+        std::stringstream               _result;
     public:
         //  ...Orthodox Canonical Form... //
         BitcoinExchange();                                          // --- Constructor              --- //
@@ -44,8 +47,10 @@ class BitcoinExchange
         void    getData(const char *data);
         void    checkInput(const char *input) const;
         bool    checkPipe(std::string& line) const;
-        int     checkInputDate(std::string& line) const;
+        int     checkInputDate(std::string& line, int flag) const;
         void    removeWhitespaces(std::string& line) const;
+        bool    checkMinus(const std::string& value) const;
+
 
 };
 
