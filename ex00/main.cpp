@@ -6,7 +6,7 @@
 /*   By: ddyankov <ddyankov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/12 12:30:06 by ddyankov          #+#    #+#             */
-/*   Updated: 2023/11/14 17:08:57 by ddyankov         ###   ########.fr       */
+/*   Updated: 2023/11/17 14:38:39 by ddyankov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,12 @@ int main(int ac, char **av)
         BitcoinExchange btc;
         
         btc.checkArg(ac);
-        btc.checkArgValue(av[1]);
         btc.getData("data.csv");
         btc.checkInput(av[1]);
     }
     catch(std::exception& e)
     {
-        std::cerr << URED << "Error: " << e.what() << std::endl;
+        std::cerr << URED << "Error: " << e.what() << RESET << std::endl;
     }
     return 0;
 }

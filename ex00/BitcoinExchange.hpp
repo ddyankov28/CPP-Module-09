@@ -6,7 +6,7 @@
 /*   By: ddyankov <ddyankov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/12 12:32:25 by ddyankov          #+#    #+#             */
-/*   Updated: 2023/11/17 12:59:02 by ddyankov         ###   ########.fr       */
+/*   Updated: 2023/11/17 14:49:08 by ddyankov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ class BitcoinExchange
 {
     private:
         std::map<std::string, float>    _map;
-        std::stringstream               _result;
     public:
         //  ...Orthodox Canonical Form... //
         BitcoinExchange();                                          // --- Constructor              --- //
@@ -43,11 +42,10 @@ class BitcoinExchange
         ~BitcoinExchange();                                         // --- Destructor               --- //
 
         void    checkArg(int argsCounter) const;
-        void    checkArgValue(char *av) const;
         void    getData(const char *data);
         void    checkInput(const char *input) const;
         bool    checkPipe(std::string& line) const;
-        int     checkInputDate(std::string& line, int flag) const;
+        int     checkInputLine(std::string& line, int flag) const;
         void    removeWhitespaces(std::string& line) const;
         bool    checkMinus(const std::string& value) const;
 

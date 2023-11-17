@@ -6,7 +6,7 @@
 /*   By: ddyankov <ddyankov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/12 12:30:25 by ddyankov          #+#    #+#             */
-/*   Updated: 2023/11/17 13:02:13 by ddyankov         ###   ########.fr       */
+/*   Updated: 2023/11/17 14:49:33 by ddyankov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ BitcoinExchange&    BitcoinExchange::operator=(const BitcoinExchange& inst)
 {
     if (this != &inst)
     {
+        _map = inst._map;
     }
     return *this;
 }
@@ -35,58 +36,60 @@ void    BitcoinExchange::checkArg(int argsCounter) const
         throw std::out_of_range("could not open file.");
 }
 
-void    BitcoinExchange::checkArgValue(char *av) const
-{
-    std::string arg = av;
-    if (arg != "input.txt")
-        throw std::out_of_range("could not open file.");
-}
-
 void    BitcoinExchange::getData(const char *data)
 {
-    std::ifstream   ifs;
+    std::ifstream   ifs(data);
     std::string     line;
-    ifs.open(data, std::ifstream::in);
     std::getline(ifs, line);
-    while (std::getline(ifs, line))
+    if (ifs.is_open())
     {
-        std::string date = line.substr(0, line.find(","));
-        std::string exchangeVal = line.substr(line.find(",") + 1);
-        //std::cout << date << " " << exchangeVal << std::endl;
-        float mapValue;
-        std::stringstream   ss(exchangeVal);
-        ss >> mapValue;
-        //std::cout << mapValue << std::endl;
-        _map.insert(std::pair<std::string, float>(date, mapValue));
+        while (std::getline(ifs, line))
+        {
+            std::string date = line.substr(0, line.find(","));
+            std::string exchangeVal = line.substr(line.find(",") + 1);
+            float mapValue = 0;
+            std::stringstream   ss(exchangeVal);
+            ss >> mapValue;
+            _map.insert(std::pair<std::string, float>(date, mapValue));
+        }    
     }
-    /*std::map<std::string,float>::iterator it = _map.begin();
-    for (it=_map.begin(); it !=_map.end(); it++)
-        std::cout << it->first << " => " << it->second << '\n';*/
+    else
+        throw std::out_of_range("could not open file"); 
+    ifs.close();
 }
 
 void    BitcoinExchange::checkInput(const char *input) const
 {
-    std::ifstream   ifs;
+    std::ifstream   ifs(input);
     std::string     line;
-    std::string     modifiedLine;
-    ifs.open(input, std::ifstream::in);
-    std::getline(ifs, line);
-    removeWhitespaces(line);
-    if (line != "date|value")
-        throw std::out_of_range("File must start with 'date | value'");
-    while (std::getline(ifs, line))
+    if (ifs.is_open())
     {
-        std::string lineOriginal = line;
+        std::getline(ifs, line);
         removeWhitespaces(line);
-        if (!checkPipe(line)) 
-             std::cout << "Bad Input => " << lineOriginal << std::endl;
-        else if (checkInputDate(line, 0) == 2)
-            std::cout << "Error: not a positive number." << std::endl;
-        else if (checkInputDate(line, 0) == 3)
-            std::cout << "Error: too large a number." << std::endl;
-        else if (checkInputDate(line, 1) == 1)
-             std::cout << "Bad Input => " << lineOriginal << std::endl;
+        if (line != "date|value")
+            throw std::out_of_range("File must start with 'date | value'");
+        while (std::getline(ifs, line))
+        {
+            std::string lineOriginal = line;
+            if(line.empty())
+            {
+                std::cerr << URED << "Error: empty line" << lineOriginal << RESET << std::endl;
+                continue ;
+            }
+            removeWhitespaces(line);
+            if (!checkPipe(line)) 
+                std::cerr << URED << "Error: bad input => " << lineOriginal << RESET << std::endl;
+            else if (checkInputLine(line, 0) == 2)
+                std::cerr << URED << "Error: not a positive number." << RESET << std::endl;
+            else if (checkInputLine(line, 0) == 3)
+                std::cerr << URED << "Error: too large number." << RESET << std::endl;
+            else if (checkInputLine(line, 1) == 1)
+                std::cerr << URED << "Error: bad input => " << lineOriginal << RESET << std::endl;
+        }    
     }
+    else
+        throw std::out_of_range("could not open file");
+    ifs.close();
 }
 
 bool    BitcoinExchange::checkPipe(std::string& line) const
@@ -115,11 +118,10 @@ bool    BitcoinExchange::checkMinus(const std::string& value) const
     return true;
 }
 
-int   BitcoinExchange::checkInputDate(std::string& line, int flag) const
+int   BitcoinExchange::checkInputLine(std::string& line, int flag) const
 {
     std::string date = line.substr(0, line.find("|"));
-    //std::cout << "Date: " << date << std::endl;
-    if (date[4] != '-' || date[7] != '-')
+    if (date[4] != '-' || date[7] != '-' || date.size() > 10)
         return 1;
     std::stringstream streamValue(line.substr(line.find("|") + 1));
     if (!checkMinus(streamValue.str()))
@@ -133,13 +135,13 @@ int   BitcoinExchange::checkInputDate(std::string& line, int flag) const
             return 1;
         if (streamValue.str()[i] == '.')
             dot++;
-        if (dot > 1)
+        if (dot > 1 || (streamValue.str()[i] == '.' && i + 1 == streamValue.str().size()))
             return 1;
     }
     std::stringstream   streamYear(date.substr(0, date.find("-")));
     int year;
     streamYear >> year;
-    if (year <= 2009 || year >= 2030)
+    if (year < 2009 || year >= 2030)
         return 1;
     float value;
     streamValue >> value;
@@ -147,16 +149,12 @@ int   BitcoinExchange::checkInputDate(std::string& line, int flag) const
         return 2;
     else if(value > 1000)
         return 3;
-    //std::cout << "Year: " << year << std::endl;
-    //std::cout << "Value: " << value << "\n\n" << std::endl;
     std::stringstream   streamMonth(date.substr(5,2));
     int month;
     streamMonth >> month;
-    //std::cout << "Month: " << month << std::endl;
     std::stringstream   streamDay(date.substr(8,2));
     int day;
     streamDay >> day;
-    //std::cout << "Day: " << day << std::endl;
     if (month < 1 || month > 12 || day < 1 || day > 31)
         return 1;
     if ((month == 4 || month == 6 || month == 9 || month == 11) && day > 30)
@@ -168,7 +166,10 @@ int   BitcoinExchange::checkInputDate(std::string& line, int flag) const
     std::map<std::string, float>::const_iterator it = _map.lower_bound(date);
     if (_map.find(date) == _map.end())
         it--;
+        
     float result = value * it->second;
+    if (year == 2009 && month == 1 && day == 1)
+        result = value * 0;
     if (flag)
         std::cout << date << " => " << value << " = " <<std::fixed << std::setprecision(1) << result << std::endl;
     return 0;
