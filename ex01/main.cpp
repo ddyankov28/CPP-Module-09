@@ -6,7 +6,7 @@
 /*   By: ddyankov <ddyankov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 13:08:34 by ddyankov          #+#    #+#             */
-/*   Updated: 2023/11/19 17:53:47 by ddyankov         ###   ########.fr       */
+/*   Updated: 2023/11/20 16:56:51 by ddyankov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,19 @@
 
 int main(int ac, char **av)
 {
-    if (checkArgs(ac))
-        return 1;
-    if(checkLine(av[1]))
-        return 1;
-
-    RPN rpn;
-
-
+    try
+    {
+        if (checkArgs(ac))
+            return 1;
+        std::string args = av[1];
+        if(checkLine(args))
+            return 1;
+        int result = calculate(args);
+        std::cout << "Result is: " <<  result << std::endl;    
+    }
+    catch (std::exception& e)
+    {
+        std::cerr << URED << "Error: " << e.what() << RESET << std::endl;
+    }
     return 0;
 }
