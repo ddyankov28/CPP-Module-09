@@ -5,28 +5,23 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ddyankov <ddyankov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/19 13:08:34 by ddyankov          #+#    #+#             */
-/*   Updated: 2023/11/21 11:44:02 by ddyankov         ###   ########.fr       */
+/*   Created: 2023/11/21 10:26:48 by ddyankov          #+#    #+#             */
+/*   Updated: 2023/11/21 17:28:37 by ddyankov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "RPN.hpp"
+# include "PmergeMe.hpp"
 
 int main(int ac, char **av)
 {
-    try
-    {
-        if (checkArgs(ac))
-            return 1;
-        std::string args = av[1];
-        if(checkLine(args))
-            return 1;
-        int result = calculate(args);
-        std::cout << "Result is: " <<  result << std::endl;    
-    }
-    catch (std::exception& e)
-    {
-        std::cerr << URED << "Error: " << e.what() << RESET << std::endl;
-    }
+    if (!enoughArgs(ac))
+        return 1;
+    if (!argIsPositiveInteger(ac, av))
+        return 1;
+    printBefore(ac, av);
+    
+    PmergeMe    sort;
+    sort.insertVector(ac, av);
+    sort.sortVector(sort.getVector());
     return 0;
 }

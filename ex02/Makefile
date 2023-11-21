@@ -5,8 +5,8 @@
 #                                                     +:+ +:+         +:+      #
 #    By: ddyankov <ddyankov@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2023/11/12 12:29:20 by ddyankov          #+#    #+#              #
-#    Updated: 2023/11/21 11:43:33 by ddyankov         ###   ########.fr        #
+#    Created: 2023/11/21 10:25:29 by ddyankov          #+#    #+#              #
+#    Updated: 2023/11/21 11:45:14 by ddyankov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,10 +14,10 @@ RED_BACK = \033[0;101m
 GREEN_BACK = \033[0;102m
 COLOUR_END = \033[0m
 
-NAME = btc
+NAME = PmergeMe
 # specifies the name of the output executable
 
-SRC = main.cpp BitcoinExchange.cpp
+SRC = main.cpp PmergeMe.cpp
 # source files required for the program
 
 OBJ = $(patsubst %.cpp, obj/%.o, $(SRC))

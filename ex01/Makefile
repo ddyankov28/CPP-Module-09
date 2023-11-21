@@ -6,7 +6,7 @@
 #    By: ddyankov <ddyankov@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/19 13:07:55 by ddyankov          #+#    #+#              #
-#    Updated: 2023/11/19 13:15:41 by ddyankov         ###   ########.fr        #
+#    Updated: 2023/11/21 11:43:55 by ddyankov         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,7 @@ OBJ = $(patsubst %.cpp, obj/%.o, $(SRC))
 DEPS = $(patsubst %.cpp, obj/%.d, $(SRC))
 # specifies the dependencies
 
-CPPFLAGS = -Wall -Werror -Wextra -std=c++98 -MMD -MP -g
+CPPFLAGS = -Wall -Werror -Wextra -std=c++98 -MMD -MP -g -pedantic
 # c++ flags for warning messages, for using the 98 standard required by subject
 # -MMD 1. Automates the process of tracking dependencies between source and 
 #        header files. When a header files is changed the associated source
