@@ -6,7 +6,7 @@
 /*   By: ddyankov <ddyankov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 10:26:37 by ddyankov          #+#    #+#             */
-/*   Updated: 2023/11/21 17:31:12 by ddyankov         ###   ########.fr       */
+/*   Updated: 2023/11/22 13:29:01 by ddyankov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include <cstdlib>
 # include <sstream>
 # include <vector>
-# include <list>
+# include <deque>
 # include <ctime>
 # include <iomanip>
 
@@ -29,23 +29,12 @@
 # define RESET "\033[0m"
 # define LINE  std::cout << "-------------------------" << std::endl;
 
-class   PmergeMe
-{
-    private:
-        std::vector<int>    _vector;
-        std::list<int>      _list;
-    public:
-        PmergeMe();                         //  Default Cnstructor
-        PmergeMe(const PmergeMe& inst);     //  Copy constructor
-        PmergeMe&   operator=(const PmergeMe& inst); // Copy assignment operator
-        ~PmergeMe();
 
-        void    insertVector(int ac, char **av);
-        void    sortVector(std::vector<int>& vec);
-
-        std::vector<int>&   getVector();
-        
-};
+void    sortVector(std::vector<int>& vec);
+void    mergeVector(std::vector<int>& leftVector, std::vector<int>& rightVector, std::vector<int>& vector);
+void    sortDeque(std::deque<int>& deque);
+void    mergeDeque(std::deque<int>& leftDeque, std::deque<int>& rightDeque, std::deque<int>& deque);
+void    printAfter(std::vector<int>& vector);
 
 bool    enoughArgs(int ac);
 bool    argIsPositiveInteger(int ac, char **av);
