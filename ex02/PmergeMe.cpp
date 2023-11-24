@@ -6,11 +6,51 @@
 /*   By: ddyankov <ddyankov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 10:26:25 by ddyankov          #+#    #+#             */
-/*   Updated: 2023/11/22 14:08:59 by ddyankov         ###   ########.fr       */
+/*   Updated: 2023/11/24 15:47:15 by ddyankov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "PmergeMe.hpp"
+
+std::vector<std::pair<int, int> >    groupElements(std::vector<int>& vec)
+{
+    std::vector<std::pair<int, int> >    pairs;
+
+    for (size_t i = 0; i < vec.size() - 1; i += 2)
+        pairs.push_back(std::pair<int, int>(vec[i], vec[i + 1]));
+    if (vec.size() % 2 != 0)
+        pairs.push_back(std::make_pair(vec[vec.size() - 1], -1));
+    return pairs;
+}
+
+std::vector<int>    largersInPair(std::vector<std::pair<int, int> >& pairs)
+{
+    std::vector<std::pair<int, int> >::iterator it = pairs.begin();
+    std::vector<int>    largeNumbers;
+    while (it != pairs.end())
+    {
+        if (it->first > it->second)
+            largeNumbers.push_back(it->first);
+        else
+            largeNumbers.push_back(it->second);
+        std::cout << "First:  " << it->first << std::endl;
+        std::cout << "Second: " << it->second << std::endl;
+        it++;
+    }
+    return largeNumbers;
+}
+
+std::vector<std::pair<int, int> >   swapPairs(std::vector<std::pair<int, int> >& pairs)
+{
+    std::vector<std::pair<int, int> >::iterator it = pairs.begin();
+    while (it != pairs.end())
+    {
+        if (it->second > it->first)
+            std::swap(it->first, it->second);
+        it++;
+    }
+    return pairs;
+}
 
 void    sortVector(std::vector<int>& vec)
 {
@@ -52,68 +92,50 @@ void    mergeVector(std::vector<int>& leftVector, std::vector<int>& rightVector,
     while (left < leftVector.size())
     {
         vector[i] = leftVector[left];
-        //std::cout << "Left: " << vector[i] << std::endl;
         i++;
         left++;
     }
     while (right < rightVector.size())
     {
         vector[i] = rightVector[right];
-        //std::cout << "Right: " << vector[i] << std::endl;
         i++;
         right++;
     }
 }
 
-void    sortDeque(std::deque<int>& deque)
+int     getFrontInt(std::vector<std::pair<int, int> >& pairs, int n)
 {
-    if (deque.size() < 2) 
-        return ;
-    std::deque<int>    leftDeque;
-    std::deque<int>    rightDeque;
-    unsigned int middle = deque.size() / 2;
-    for (u_int i = 0; i < deque.size(); i++)
+    std::vector<std::pair<int, int> >::const_iterator itBegin = pairs.begin();
+
+    while (itBegin != pairs.end())
     {
-        if (i < middle)
-            leftDeque.push_back(deque[i]);
-        else
-            rightDeque.push_back(deque[i]); 
+        if (itBegin->first == n)
+            return itBegin->second;
+        else if (itBegin->second == n)
+            return itBegin->first;
+        itBegin++;
     }
-    sortDeque(leftDeque);
-    sortDeque(rightDeque);
-    mergeDeque(leftDeque, rightDeque, deque);
+    return -1;
 }
 
-void    mergeDeque(std::deque<int>& leftDeque, std::deque<int>& rightDeque, std::deque<int>& deque)
+std::vector<int>::iterator  binarySearch(std::vector<int> largeNumbers, int target)
 {
-    u_int   i = 0, left = 0, right = 0;
-    while (left < leftDeque.size() && right < rightDeque.size())
+    std::vector<int>::iterator  start = largeNumbers.begin();
+    std::vector<int>::iterator  end = largeNumbers.end();
+    // std::cout << "START:    " << *start << std::endl;
+    // std::cout << "END:    " << *end << std::endl;
+
+    while (start < end)
     {
-        if (leftDeque[left] < rightDeque[right])
-        {
-           deque[i] = leftDeque[left];
-           i++;
-           left++;
-        }
+        std::vector<int>::iterator middle = start + (end - start) / 2;
+        std::cout << "MIDDLE:   " << *middle << std::endl;
+        std::cout << "TARGET:   " << target << std::endl;
+        if (target > *middle)
+            start = middle + 1;            
         else
-        {
-            deque[i] = rightDeque[right];
-            i++;
-            right++;
-        }
+            end = middle;
     }
-    while (left < leftDeque.size())
-    {
-        deque[i] = leftDeque[left];
-        i++;
-        left++;
-    }
-    while (right < rightDeque.size())
-    {
-        deque[i] = rightDeque[right];
-        i++;
-        right++;
-    }
+    return start;
 }
 
 bool    enoughArgs(int ac)
