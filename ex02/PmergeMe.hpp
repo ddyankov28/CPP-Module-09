@@ -6,7 +6,7 @@
 /*   By: ddyankov <ddyankov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 10:26:37 by ddyankov          #+#    #+#             */
-/*   Updated: 2023/11/24 15:37:39 by ddyankov         ###   ########.fr       */
+/*   Updated: 2023/11/26 16:02:12 by ddyankov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,18 +30,54 @@
 # define RESET "\033[0m"
 # define LINE  std::cout << "-------------------------" << std::endl;
 
-std::vector<std::pair<int, int> >    groupElements(std::vector<int>& vec);
-std::vector<int>    largersInPair(std::vector<std::pair<int, int> >& pairs);
+//static int c;
 
-std::vector<std::pair<int, int> >   swapPairs(std::vector<std::pair<int, int> >& pairs);
-int     getFrontInt(std::vector<std::pair<int, int> >& pairs, int n);
-void    printAfter(std::vector<int>& vector);
-void    sortVector(std::vector<int>& vec);
-void    mergeVector(std::vector<int>& leftVector, std::vector<int>& rightVector, std::vector<int>& vector);
-std::vector<int>::iterator binarySearch(std::vector<int> largeNumbers, int n);
+struct PmergeMe
+{
+    std::vector<int>                    startVector;
+    std::vector<std::pair<int, int> >   pairsVector;
+    std::vector<int>                    resultVector;
+    clock_t                             startV;
+    clock_t                             endV;
+    double                              timeV;
 
+    std::deque<int>                     startDeque;
+    std::deque<std::pair<int, int> >    pairsDeque;
+    std::deque<int>                     resultDeque;
+    clock_t                             startD;
+    clock_t                             endD;
+    double                              timeD;
+};
+//      --- Input handling ---      //
 bool    enoughArgs(int ac);
 bool    argIsPositiveInteger(int ac, char **av);
+bool    hasDuplicates(int ac, char **av);
+
 void    printBefore(int ac, char **av);
+
+//      --- Vector ---     ///
+void    groupElementsVector(PmergeMe* merge);
+void    swapPairsVector(PmergeMe* merge);
+void    sortVector(std::vector<std::pair<int, int> >& pairs);
+void    mergeVector(std::vector<std::pair<int, int> >& leftPair, std::vector<std::pair<int, int> >& rightPair, std::vector<std::pair<int, int> >& vector);
+void    insertInResultTheBiggerAndFirstSmallVector(PmergeMe* merge);
+void    insertSmallerNumbersWithBinarySearchVector(PmergeMe* merge);
+std::vector<int>::iterator  binarySearchVector(std::vector<int>& result, int target);
+
+//      --- Deque ---     ///
+void    groupElementsDeque(PmergeMe* merge);
+void    swapPairsDeque(PmergeMe* merge);
+void    sortDeque(std::deque<std::pair<int, int> >& pairs);
+void    mergeDeque(std::deque<std::pair<int, int> >& leftPair, std::deque<std::pair<int, int> >& rightPair, std::deque<std::pair<int, int> >& vector);
+void    insertInResultTheBiggerAndFirstSmallDeque(PmergeMe* merge);
+void    insertSmallerNumbersWithBinarySearchDeque(PmergeMe* merge);
+std::deque<int>::iterator  binarySearchDeque(std::deque<int>& result, int target);
+
+
+void    printAfter(std::vector<int> vector);
+
+//      --- Additional for debug purpose ---    ///
+void    printPairs(std::vector<std::pair<int, int> >& vector);
+
 
 # endif

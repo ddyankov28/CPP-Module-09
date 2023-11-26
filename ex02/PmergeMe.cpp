@@ -6,135 +6,235 @@
 /*   By: ddyankov <ddyankov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 10:26:25 by ddyankov          #+#    #+#             */
-/*   Updated: 2023/11/24 15:47:15 by ddyankov         ###   ########.fr       */
+/*   Updated: 2023/11/26 15:58:50 by ddyankov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "PmergeMe.hpp"
 
-std::vector<std::pair<int, int> >    groupElements(std::vector<int>& vec)
+void    groupElementsVector(PmergeMe* merge)
 {
-    std::vector<std::pair<int, int> >    pairs;
-
-    for (size_t i = 0; i < vec.size() - 1; i += 2)
-        pairs.push_back(std::pair<int, int>(vec[i], vec[i + 1]));
-    if (vec.size() % 2 != 0)
-        pairs.push_back(std::make_pair(vec[vec.size() - 1], -1));
-    return pairs;
+    for (size_t i = 0; i < merge->startVector.size() - 1; i += 2)
+        merge->pairsVector.push_back(std::pair<int, int>(merge->startVector[i], merge->startVector[i + 1]));
+    if (merge->startVector.size() % 2 != 0)
+        merge->pairsVector.push_back(std::make_pair(merge->startVector[merge->startVector.size() - 1], -1));
 }
 
-std::vector<int>    largersInPair(std::vector<std::pair<int, int> >& pairs)
+void    groupElementsDeque(PmergeMe* merge)
 {
-    std::vector<std::pair<int, int> >::iterator it = pairs.begin();
-    std::vector<int>    largeNumbers;
-    while (it != pairs.end())
-    {
-        if (it->first > it->second)
-            largeNumbers.push_back(it->first);
-        else
-            largeNumbers.push_back(it->second);
-        std::cout << "First:  " << it->first << std::endl;
-        std::cout << "Second: " << it->second << std::endl;
-        it++;
-    }
-    return largeNumbers;
+    for (size_t i = 0; i < merge->startDeque.size() - 1; i += 2)
+        merge->pairsDeque.push_back(std::pair<int, int>(merge->startDeque[i], merge->startDeque[i + 1]));
+    if (merge->startDeque.size() % 2 != 0)
+        merge->pairsDeque.push_back(std::make_pair(merge->startDeque[merge->startDeque.size() - 1], -1));
 }
 
-std::vector<std::pair<int, int> >   swapPairs(std::vector<std::pair<int, int> >& pairs)
+void   swapPairsVector(PmergeMe* merge)
 {
-    std::vector<std::pair<int, int> >::iterator it = pairs.begin();
-    while (it != pairs.end())
+    std::vector<std::pair<int, int> >::iterator it = merge->pairsVector.begin();
+    while (it != merge->pairsVector.end())
     {
         if (it->second > it->first)
             std::swap(it->first, it->second);
         it++;
     }
-    return pairs;
 }
 
-void    sortVector(std::vector<int>& vec)
+void   swapPairsDeque(PmergeMe* merge)
 {
-    if (vec.size() < 2) 
+    std::deque<std::pair<int, int> >::iterator it = merge->pairsDeque.begin();
+    while (it != merge->pairsDeque.end())
+    {
+        if (it->second > it->first)
+            std::swap(it->first, it->second);
+        it++;
+    }
+}
+
+void    sortVector(std::vector<std::pair<int, int> >& pairs)
+{
+    if (pairs.size() < 2) 
         return ;
-    std::vector<int>    leftVector;
-    std::vector<int>    rightVector;
-    unsigned int middle = vec.size() / 2;
-    for (u_int i = 0; i < vec.size(); i++)
+    std::vector<std::pair<int, int> >    leftPair;
+    std::vector<std::pair<int, int> >    rightPair;
+    unsigned int middle = pairs.size() / 2;
+    for (u_int i = 0; i < pairs.size(); i++)
     {
         if (i < middle)
-            leftVector.push_back(vec[i]);
+            leftPair.push_back(pairs[i]);
         else
-            rightVector.push_back(vec[i]); 
+            rightPair.push_back(pairs[i]); 
     }
-    sortVector(leftVector);
-    sortVector(rightVector);
-    mergeVector(leftVector, rightVector, vec);
+    sortVector(leftPair);
+    sortVector(rightPair);
+    mergeVector(leftPair, rightPair, pairs);
 }
 
-void    mergeVector(std::vector<int>& leftVector, std::vector<int>& rightVector, std::vector<int>& vector)
+void    sortDeque(std::deque<std::pair<int, int> >& pairs)
+{
+    if (pairs.size() < 2) 
+        return ;
+    std::deque<std::pair<int, int> >    leftPair;
+    std::deque<std::pair<int, int> >    rightPair;
+    unsigned int middle = pairs.size() / 2;
+    for (u_int i = 0; i < pairs.size(); i++)
+    {
+        if (i < middle)
+            leftPair.push_back(pairs[i]);
+        else
+            rightPair.push_back(pairs[i]); 
+    }
+    sortDeque(leftPair);
+    sortDeque(rightPair);
+    mergeDeque(leftPair, rightPair, pairs);
+}
+
+void    mergeVector(std::vector<std::pair<int, int> >&    leftPair, std::vector<std::pair<int, int> >&    rightPair, std::vector<std::pair<int, int> >& vector)
 {
     u_int   i = 0, left = 0, right = 0;
-    while (left < leftVector.size() && right < rightVector.size())
+    while (left < leftPair.size() && right < rightPair.size())
     {
-        if (leftVector[left] < rightVector[right])
+        if (leftPair[left].first < rightPair[right].first)
         {
-           vector[i] = leftVector[left];
+           vector[i] = leftPair[left];
            i++;
            left++;
         }
         else
         {
-            vector[i] = rightVector[right];
+            vector[i] = rightPair[right];
             i++;
             right++;
         }
     }
-    while (left < leftVector.size())
+    while (left < leftPair.size())
     {
-        vector[i] = leftVector[left];
+        vector[i] = leftPair[left];
         i++;
         left++;
     }
-    while (right < rightVector.size())
+    while (right < rightPair.size())
     {
-        vector[i] = rightVector[right];
+        vector[i] = rightPair[right];
         i++;
         right++;
     }
 }
 
-int     getFrontInt(std::vector<std::pair<int, int> >& pairs, int n)
+void    mergeDeque(std::deque<std::pair<int, int> >&    leftPair, std::deque<std::pair<int, int> >&    rightPair, std::deque<std::pair<int, int> >& deque)
 {
-    std::vector<std::pair<int, int> >::const_iterator itBegin = pairs.begin();
-
-    while (itBegin != pairs.end())
+    u_int   i = 0, left = 0, right = 0;
+    while (left < leftPair.size() && right < rightPair.size())
     {
-        if (itBegin->first == n)
-            return itBegin->second;
-        else if (itBegin->second == n)
-            return itBegin->first;
-        itBegin++;
+        if (leftPair[left].first < rightPair[right].first)
+        {
+           deque[i] = leftPair[left];
+           i++;
+           left++;
+        }
+        else
+        {
+            deque[i] = rightPair[right];
+            i++;
+            right++;
+        }
     }
-    return -1;
+    while (left < leftPair.size())
+    {
+        deque[i] = leftPair[left];
+        i++;
+        left++;
+    }
+    while (right < rightPair.size())
+    {
+        deque[i] = rightPair[right];
+        i++;
+        right++;
+    }
 }
 
-std::vector<int>::iterator  binarySearch(std::vector<int> largeNumbers, int target)
+void    insertInResultTheBiggerAndFirstSmallVector(PmergeMe* merge)
 {
-    std::vector<int>::iterator  start = largeNumbers.begin();
-    std::vector<int>::iterator  end = largeNumbers.end();
-    // std::cout << "START:    " << *start << std::endl;
-    // std::cout << "END:    " << *end << std::endl;
+    std::vector<std::pair<int, int> >::const_iterator    itPairs = merge->pairsVector.begin();
+    while (itPairs != merge->pairsVector.end())
+    {
+        merge->resultVector.push_back(itPairs->first);
+        itPairs++;
+    }
+    itPairs = merge->pairsVector.begin();
+    if (itPairs->second >= 0)
+        merge->resultVector.insert(merge->resultVector.begin(), itPairs->second);
+}
+
+void    insertInResultTheBiggerAndFirstSmallDeque(PmergeMe* merge)
+{
+    std::deque<std::pair<int, int> >::const_iterator    itPairs = merge->pairsDeque.begin();
+    while (itPairs != merge->pairsDeque.end())
+    {
+        merge->resultDeque.push_back(itPairs->first);
+        itPairs++;
+    }
+    itPairs = merge->pairsDeque.begin();
+    if (itPairs->second >= 0)
+        merge->resultDeque.insert(merge->resultDeque.begin(), itPairs->second);
+}
+
+void    insertSmallerNumbersWithBinarySearchVector(PmergeMe* merge)
+{
+    std::vector<std::pair<int, int> >::const_iterator    itPairs = merge->pairsVector.begin() + 1;
+    while (itPairs!= merge->pairsVector.end())
+    {
+        if (itPairs->second >= 0)
+            merge->resultVector.insert(binarySearchVector(merge->resultVector, itPairs->second), itPairs->second);
+        itPairs++;
+    }
+}
+
+void    insertSmallerNumbersWithBinarySearchDeque(PmergeMe* merge)
+{
+    std::deque<std::pair<int, int> >::const_iterator    itPairs = merge->pairsDeque.begin() + 1;
+    while (itPairs!= merge->pairsDeque.end())
+    {
+        if (itPairs->second >= 0)
+            merge->resultDeque.insert(binarySearchDeque(merge->resultDeque, itPairs->second), itPairs->second);
+        itPairs++;
+    }
+}
+
+std::vector<int>::iterator  binarySearchVector(std::vector<int>& result, int target)
+{
+    std::vector<int>::iterator  start = result.begin();
+    std::vector<int>::iterator  end = result.end();
 
     while (start < end)
     {
         std::vector<int>::iterator middle = start + (end - start) / 2;
-        std::cout << "MIDDLE:   " << *middle << std::endl;
-        std::cout << "TARGET:   " << target << std::endl;
         if (target > *middle)
             start = middle + 1;            
         else
             end = middle;
+        //c++;
     }
+    //std::cout << c << std::endl;
+
+    return start;
+}
+
+std::deque<int>::iterator  binarySearchDeque(std::deque<int>& result, int target)
+{
+    std::deque<int>::iterator  start = result.begin();
+    std::deque<int>::iterator  end = result.end();
+
+    while (start < end)
+    {
+        std::deque<int>::iterator middle = start + (end - start) / 2;
+        if (target > *middle)
+            start = middle + 1;            
+        else
+            end = middle;
+        //c++;
+    }
+    //std::cout << c << std::endl;
+
     return start;
 }
 
@@ -148,7 +248,35 @@ bool    enoughArgs(int ac)
     return true;
 }
 
-void    printAfter(std::vector<int>& vector)
+bool    hasDuplicates(int ac, char **av)
+{
+    for (int i = 1; i < ac; ++i)
+    {
+        for (int j = i + 1; j < ac; ++j) 
+        {
+            if (atoi(av[i]) == atoi(av[j]))
+            {
+                std::cerr << URED << "Error: Duplicate number found and it is " << av[i] << RESET << std::endl;
+                return true;
+            }
+        }
+    }
+    return false;
+
+}
+void    printPairs(std::vector<std::pair<int, int> >& vector)
+{
+    std::vector<std::pair<int, int > >::const_iterator    it = vector.begin();
+    std::cout << "PAAIRS:    " << std::endl;
+    while (it != vector.end())
+    {
+        std::cout << "First:    " << it->first << std::endl;
+        std::cout << "Second:   " << it->second << std::endl;
+        it++;
+    }
+}
+
+void    printAfter(std::vector<int> vector)
 {
     std::vector<int>::const_iterator    it = vector.begin();
     std::cout << "After:    ";
@@ -159,6 +287,7 @@ void    printAfter(std::vector<int>& vector)
     }
     std::cout << std::endl;
 }
+
 
 bool    argIsPositiveInteger(int ac, char **av)
 {

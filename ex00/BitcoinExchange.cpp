@@ -6,7 +6,7 @@
 /*   By: ddyankov <ddyankov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/12 12:30:25 by ddyankov          #+#    #+#             */
-/*   Updated: 2023/11/17 17:50:16 by ddyankov         ###   ########.fr       */
+/*   Updated: 2023/11/26 16:12:39 by ddyankov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,7 @@ BitcoinExchange::BitcoinExchange(const BitcoinExchange& inst)
 BitcoinExchange&    BitcoinExchange::operator=(const BitcoinExchange& inst)
 {
     if (this != &inst)
-    {
         _map = inst._map;
-    }
     return *this;
 }
 
@@ -67,7 +65,7 @@ void    BitcoinExchange::checkInput(const char *input) const
         std::getline(ifs, line);
         removeWhitespaces(line);
         if (line != "date|value")
-            throw std::out_of_range("File must start with 'date | value'");
+            throw std::out_of_range("File must start with 'date | value' or file is empty");
         while (std::getline(ifs, line))
         {
             std::string lineOriginal = line;

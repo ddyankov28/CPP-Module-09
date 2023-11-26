@@ -6,7 +6,7 @@
 /*   By: ddyankov <ddyankov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 13:08:52 by ddyankov          #+#    #+#             */
-/*   Updated: 2023/11/21 11:44:51 by ddyankov         ###   ########.fr       */
+/*   Updated: 2023/11/26 16:58:42 by ddyankov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ bool    checkLine(std::string& args)
         if (!isspace(args[i]) && !isdigit(args[i]) && args[i] != '*' 
             && args[i] != '/' && args[i] != '+' && args[i] != '-')
         {
-            std::cerr << URED << "Error: Invalind input" << RESET << std::endl;
+            std::cerr << URED << "Error: Invalid input" << RESET << std::endl;
             return true;
         } 
     }
@@ -89,23 +89,33 @@ int calculate(std::string& args)
         }
         it++;
     }
-    std::cout << "Whitespace gone: " << args << "|" << std::endl;
     return (stack.top());
 }
 
 int doOperation(int a, int b, std::string::iterator it)
 {
-    std::cout << *it << " a: " << a << " b: "<< b << std::endl;
     if (*it == '+')
+    {
+        if (static_cast<long>(a) + static_cast<long>(b) > INT_MAX)
+            throw std::out_of_range("Integer overflow");
         return a + b;
+    }
     else if (*it == '-')
+    {
+        if (static_cast<long>(a) - static_cast<long>(b) < INT_MIN)
+            throw std::out_of_range("Integer overflow");
         return a - b;
+    }
     else if (*it == '/' && b == 0)
         throw std::out_of_range("Error: Can not divide by 0");
     else if (*it == '/')
         return a / b;
     else
+    {
+        if (static_cast<long>(a) * static_cast<long>(b) > INT_MAX)
+            throw std::out_of_range("Integer overflow");
         return a * b;
+    }
 }
 
 bool    checkDigitsAndOperators(std::string& args)

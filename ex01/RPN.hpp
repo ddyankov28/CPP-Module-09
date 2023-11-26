@@ -6,7 +6,7 @@
 /*   By: ddyankov <ddyankov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 13:08:45 by ddyankov          #+#    #+#             */
-/*   Updated: 2023/11/21 11:44:54 by ddyankov         ###   ########.fr       */
+/*   Updated: 2023/11/26 16:33:47 by ddyankov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <iostream>
 # include <stack>
+# include <climits>
 
 # define URED "\033[4;31m"
 # define RED "\033[1;91m"
