@@ -6,7 +6,7 @@
 /*   By: ddyankov <ddyankov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 10:26:48 by ddyankov          #+#    #+#             */
-/*   Updated: 2023/11/26 16:04:33 by ddyankov         ###   ########.fr       */
+/*   Updated: 2023/11/28 13:42:42 by ddyankov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ int main(int ac, char **av)
         return 1;
     if (hasDuplicates(ac, av))
         return 1;
+    if (isSorted(ac, av))
+        return 0;
     printBefore(ac, av);
     PmergeMe    merge;
     

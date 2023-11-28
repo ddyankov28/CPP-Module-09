@@ -6,7 +6,7 @@
 /*   By: ddyankov <ddyankov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/12 12:32:25 by ddyankov          #+#    #+#             */
-/*   Updated: 2023/11/21 11:43:15 by ddyankov         ###   ########.fr       */
+/*   Updated: 2023/11/28 12:32:49 by ddyankov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,11 +50,7 @@ class BitcoinExchange
         bool    checkMinus(const std::string& value) const;
         int     handleDate(const std::string& date) const;
         std::string formatDouble(double value) const;
-
-
-
+        std::string getSeperator(const std::string& line) const;        
 };
-
-
 
 # endif

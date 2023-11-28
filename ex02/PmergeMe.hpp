@@ -6,7 +6,7 @@
 /*   By: ddyankov <ddyankov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 10:26:37 by ddyankov          #+#    #+#             */
-/*   Updated: 2023/11/26 16:02:12 by ddyankov         ###   ########.fr       */
+/*   Updated: 2023/11/28 13:16:34 by ddyankov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ struct PmergeMe
 bool    enoughArgs(int ac);
 bool    argIsPositiveInteger(int ac, char **av);
 bool    hasDuplicates(int ac, char **av);
+bool    isSorted(int ac, char **av);
 
 void    printBefore(int ac, char **av);
 

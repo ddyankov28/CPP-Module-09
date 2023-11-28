@@ -6,7 +6,7 @@
 /*   By: ddyankov <ddyankov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 13:08:52 by ddyankov          #+#    #+#             */
-/*   Updated: 2023/11/26 16:58:42 by ddyankov         ###   ########.fr       */
+/*   Updated: 2023/11/27 13:54:47 by ddyankov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,3 +133,4 @@ bool    checkDigitsAndOperators(std::string& args)
         return true;
     return false;
 }
+

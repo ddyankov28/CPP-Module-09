@@ -6,7 +6,7 @@
 /*   By: ddyankov <ddyankov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/12 12:30:25 by ddyankov          #+#    #+#             */
-/*   Updated: 2023/11/26 16:12:39 by ddyankov         ###   ########.fr       */
+/*   Updated: 2023/11/28 13:08:27 by ddyankov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,17 +34,40 @@ void    BitcoinExchange::checkArg(int argsCounter) const
         throw std::out_of_range("could not open file.");
 }
 
+std::string    BitcoinExchange::getSeperator(const std::string& line) const
+{
+    std::string seperator = "a";
+    for (u_int i = 0; i < line.size(); i++)
+    {
+        if (!isalnum(line[i]) && !isspace(line[i]))
+        {
+            seperator[0] = line[i];
+            break ;
+        }
+    }
+    if (seperator.size() != 1)
+        throw std::out_of_range("Seperator should be a character");
+    return seperator;
+}
+
 void    BitcoinExchange::getData(const char *data)
 {
     std::ifstream   ifs(data);
     std::string     line;
-    std::getline(ifs, line);
     if (ifs.is_open())
     {
+        std::getline(ifs, line);
+        if (line.empty())
+            throw std::out_of_range("Empty file");
+        removeWhitespaces(line);
+        std::string seperator = getSeperator(line);
         while (std::getline(ifs, line))
         {
-            std::string date = line.substr(0, line.find(","));
-            std::string exchangeVal = line.substr(line.find(",") + 1);
+            removeWhitespaces(line);
+            if (line.empty())
+                throw std::out_of_range("Error in data.csv or is empty");
+            std::string date = line.substr(0, line.find(seperator));
+            std::string exchangeVal = line.substr(line.find(seperator) + 1);
             float mapValue = 0;
             std::stringstream   ss(exchangeVal);
             ss >> mapValue;
@@ -54,6 +77,8 @@ void    BitcoinExchange::getData(const char *data)
     else
         throw std::out_of_range("could not open file"); 
     ifs.close();
+    if (_map.empty())
+        throw std::out_of_range("data.csv is empty");
 }
 
 void    BitcoinExchange::checkInput(const char *input) const
@@ -131,7 +156,7 @@ int   BitcoinExchange::checkInputLine(std::string& line, int flag) const
     int dot = 0;
     for (unsigned int i = 0; i < streamValue.str().size(); i++)
     {
-        if (!isdigit(streamValue.str()[i]) && streamValue.str()[i] != '.')
+        if (!isdigit(streamValue.str()[i]) && streamValue.str()[i] != '.' && streamValue.str()[i] != '-')
             return 1;
         if (streamValue.str()[i] == '.')
             dot++;

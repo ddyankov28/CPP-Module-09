@@ -6,7 +6,7 @@
 /*   By: ddyankov <ddyankov@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/21 10:26:25 by ddyankov          #+#    #+#             */
-/*   Updated: 2023/11/26 15:58:50 by ddyankov         ###   ########.fr       */
+/*   Updated: 2023/11/28 13:35:30 by ddyankov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -311,6 +311,17 @@ bool    argIsPositiveInteger(int ac, char **av)
             }
         }    
     }
+    return true;
+}
+
+bool    isSorted(int ac, char **av)
+{
+    for (int i = 1; i < ac - 1; i++)
+    {
+        if (atoi(av[i]) > atoi(av[i + 1]))
+            return false;
+    }
+    std::cout << CYAN << "Already sorted" << RESET << std::endl;
     return true;
 }
 
